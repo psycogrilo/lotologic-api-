@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  password          String
+  whatsapp          String?
+  favoriteLotteries String[]
+  emailConfirmed    Boolean   @default(false)
+  emailToken        String?
+  planStatus        String    @default("pending_payment")
+  planStartedAt     DateTime?
+  planExpiresAt     DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  games             Game[]
+  spreads           Spread[]
+  payments          Payment[]
+}
+
+model Game {
+  id        String   @id @default(cuid())
+  userId    String
+  lottery   String
+  numbers   Int[]
+  betSize   Int
+  score     Int
+  mode      String   @default("single")
+  analyzed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Spread {
+  id                String   @id @default(cuid())
+  userId            String
+  lottery           String
+  groupSize         Int
+  groupNumbers      Int[]
+  totalCombinations Int
+  combinations      Json
+  totalCost         Float
+  score             Int
+  createdAt         DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id               String    @id @default(cuid())
+  userId           String
+  gateway          String    @default("mercadopago")
+  gatewayPaymentId String?
+  method           String
+  amount           Int
+  status           String    @default("pending")
+  createdAt        DateTime  @default(now())
+  paidAt           DateTime?
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
