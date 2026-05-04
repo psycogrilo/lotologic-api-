@@ -7,9 +7,8 @@ dotenv.config()
 
 const app = Fastify({ logger: true })
 
-// Plugins
 app.register(cors, {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: true,
   credentials: true,
 })
 
@@ -17,10 +16,8 @@ app.register(jwt, {
   secret: process.env.JWT_SECRET || 'secret',
 })
 
-// Health check
 app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }))
 
-// Routes
 import { authRoutes }    from './routes/auth'
 import { userRoutes }    from './routes/users'
 import { gameRoutes }    from './routes/games'
@@ -37,7 +34,6 @@ app.register(paymentRoutes,  { prefix: '/api/payments' })
 app.register(drawRoutes,     { prefix: '/api/draws'    })
 app.register(analysisRoutes, { prefix: '/api/analysis' })
 
-// Start
 const start = async () => {
   try {
     const port = Number(process.env.PORT) || 3001
