@@ -25,13 +25,16 @@ export async function drawRoutes(app: FastifyInstance) {
     const { lottery } = req.params as { lottery: string }
     try {
       const data = await fetchLatestDraw(lottery)
+
+      // ✅ FIX: retorna concurso e date corretamente
       return {
-        concurso: data.numero,
-        date: data.dataApuracao,
-        numbers: data.listaDezenas?.map(Number) || [],
+        concurso: data.numero ?? data.concurso ?? null,
+        date: data.dataApuracao ?? data.date ?? null,
+        numbers: data.listaDezenas?.map(Number) ?? data.dezenas?.map(Number) ?? [],
         lottery,
       }
     } catch (e) {
+      console.error('Erro ao buscar último resultado da Caixa:', e)
       return reply.status(500).send({ message: 'Erro ao buscar resultado da Caixa' })
     }
   })
@@ -45,10 +48,12 @@ export async function drawRoutes(app: FastifyInstance) {
       const endpoint = map[lottery] || 'megasena'
       const res = await fetch(`${CAIXA_API}/${endpoint}/${concurso}`)
       const data = await res.json()
+
+      // ✅ FIX: retorna concurso e date corretamente
       return {
-        concurso: data.numero,
-        date: data.dataApuracao,
-        numbers: data.listaDezenas?.map(Number) || [],
+        concurso: data.numero ?? data.concurso ?? null,
+        date: data.dataApuracao ?? data.date ?? null,
+        numbers: data.listaDezenas?.map(Number) ?? data.dezenas?.map(Number) ?? [],
       }
     } catch {
       return reply.status(404).send({ message: 'Concurso não encontrado' })
