@@ -27,16 +27,18 @@ model User {
 }
 
 model Game {
-  id        String   @id @default(cuid())
-  userId    String
-  lottery   String
-  numbers   Int[]
-  betSize   Int
-  score     Int
-  mode      String   @default("single")
-  analyzed  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String   @id @default(cuid())
+  userId          String
+  lottery         String
+  numbers         Int[]
+  suggestedNumbers Int[]   @default([])
+  anchors         Int[]    @default([])
+  betSize         Int
+  score           Int
+  mode            String   @default("single")
+  analyzed        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Spread {
@@ -64,4 +66,16 @@ model Payment {
   createdAt        DateTime  @default(now())
   paidAt           DateTime?
   user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DrawResult {
+  id        String   @id @default(cuid())
+  lottery   String
+  concurso  Int
+  date      String
+  numbers   Int[]
+  createdAt DateTime @default(now())
+
+  @@unique([lottery, concurso])
+  @@index([lottery])
 }

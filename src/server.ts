@@ -3,10 +3,8 @@ import cors from '@fastify/cors'
 import jwt from '@fastify/jwt'
 import dotenv from 'dotenv'
 import { execSync } from 'child_process'
-
 dotenv.config()
 
-// Rodar migrations automaticamente ao iniciar
 try {
   console.log('Rodando migrations...')
   execSync('npx prisma migrate deploy', { stdio: 'inherit' })
@@ -16,10 +14,8 @@ try {
 }
 
 const app = Fastify({ logger: true })
-
 app.register(cors, { origin: true, credentials: true })
 app.register(jwt, { secret: process.env.JWT_SECRET || 'secret' })
-
 app.get('/health', async () => ({ status: 'ok', timestamp: new Date().toISOString() }))
 
 import { authRoutes }     from './routes/auth'
@@ -29,6 +25,7 @@ import { spreadRoutes }   from './routes/spreads'
 import { paymentRoutes }  from './routes/payments'
 import { drawRoutes }     from './routes/draws'
 import { analysisRoutes } from './routes/analysis'
+import { statsRoutes }    from './routes/stats'
 
 app.register(authRoutes,     { prefix: '/api/auth'     })
 app.register(userRoutes,     { prefix: '/api/users'    })
@@ -37,6 +34,7 @@ app.register(spreadRoutes,   { prefix: '/api/spreads'  })
 app.register(paymentRoutes,  { prefix: '/api/payments' })
 app.register(drawRoutes,     { prefix: '/api/draws'    })
 app.register(analysisRoutes, { prefix: '/api/analysis' })
+app.register(statsRoutes,    { prefix: '/api/stats'    })
 
 const start = async () => {
   try {
@@ -48,5 +46,4 @@ const start = async () => {
     process.exit(1)
   }
 }
-
 start()
