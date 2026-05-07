@@ -37,7 +37,7 @@ export async function agentRoutes(app: FastifyInstance) {
         }),
       })
 
-      const data = await response.json() as any
+      console.log("Claude API status:", response.status); const data = await response.json() as any; console.log("Claude API response:", JSON.stringify(data).substring(0, 500))
       const text = data.content?.[0]?.text || 'Desculpe, tive um problema ao responder.'
       return { text }
     } catch (e: any) {
