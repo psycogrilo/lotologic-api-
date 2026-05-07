@@ -25,6 +25,7 @@ import { spreadRoutes }   from './routes/spreads'
 import { paymentRoutes }  from './routes/payments'
 import { drawRoutes }     from './routes/draws'
 import { analysisRoutes } from './routes/analysis'
+import { agentRoutes } from './routes/agent'
 import { statsRoutes }    from './routes/stats'
 
 app.register(authRoutes,     { prefix: '/api/auth'     })
@@ -34,6 +35,7 @@ app.register(spreadRoutes,   { prefix: '/api/spreads'  })
 app.register(paymentRoutes,  { prefix: '/api/payments' })
 app.register(drawRoutes,     { prefix: '/api/draws'    })
 app.register(analysisRoutes, { prefix: '/api/analysis' })
+app.register(agentRoutes, { prefix: '/api/agent' })
 app.register(statsRoutes,    { prefix: '/api/stats'    })
 
 const start = async () => {
